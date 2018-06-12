@@ -1,0 +1,26 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+
+targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_7
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    compile 'com.android.tools.build:gradle:3.1.3'
+    compile 'org.aspectj:aspectjtools:1.8.13'
+}
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: uri('../hxsdMaven'))
+        pom.groupId = 'com.hxsd.plugin'
+        pom.artifactId = 'hxsdplugin'
+        pom.version = '1.0.0'
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
