@@ -1,0 +1,105 @@
+// 应用插件
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
+def baseUrl = 'https://github.com/Muwl/HXAOP'
+
+def siteUrl = baseUrl
+def gitUrl = "${baseUrl}/hxaoplibrary"
+def issueUrl = "${baseUrl}/issues"
+def docUrl = "${baseUrl}/wiki"
+
+group = 'com.hxsd.plugin'  // 组名
+def libName = "HXAopLibrary"
+version = '1.0.6' // 版本
+
+//生成源文件
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+//生成文档
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    options.encoding "UTF-8"
+    options.charSet 'UTF-8'
+    options.author true
+    options.version true
+    options.links docUrl
+    failOnError false
+}
+
+//文档打包成jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+//拷贝javadoc文件
+task copyDoc(type: Copy) {
+    from "${buildDir}/docs/"
+    into "docs"
+}
+
+//上传到jcenter所需要的源码文件
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+install {
+    repositories.mavenInstaller {
+            // This generates POM.xml with proper paramters
+            pom.project{
+                //添加项目描述
+                packaging 'aar'
+                name 'HXAopLibrary'
+                url siteUrl
+                //设置开源证书信息
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                //添加开发者信息
+                developers {
+                    developer {
+                        name 'mwl'
+                        email 'itexplorer@126.com'
+                    }
+                }
+
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+
+
+}
+
+
+//配置上传Bintray相关信息
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user =  properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['published','archives']
+    publish = true
+    pkg {
+        repo = 'HXAopPlugin' // 上传到中央仓库的名称
+        name = 'HXAopLibrary' // 上传到jcenter 的项目名称
+        desc = '火星aop基础库' // 项目描述
+        websiteUrl = siteUrl
+        issueTrackerUrl = issueUrl
+        vcsUrl = gitUrl
+        labels = ['gradle', 'plugin']
+        licenses = ['Apache-2.0']
+        publish = true
+    }
+}

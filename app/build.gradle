@@ -1,7 +1,5 @@
-import com.hxsd.hxonline.HXAopPlugin
 apply plugin: 'com.android.application'
-apply plugin: HXAopPlugin
-
+apply plugin: 'com.hxsd.hxonline.HXAopPlugin'
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -27,7 +25,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation project(':hxaoplibrary')
+    implementation  'com.hxsd.plugin:hxaoplibrary:1.0.6'
+//    implementation project(':hxaoplibrary')
 }
 
 

@@ -1,0 +1,69 @@
+// 应用插件
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
+
+
+
+def baseUrl = 'https://github.com/Muwl/HXAOP'
+def siteUrl = baseUrl
+def gitUrl = "${baseUrl}/hxplugin"
+def issueUrl = "${baseUrl}/issues"
+
+
+
+install {
+    repositories {
+        mavenInstaller {
+            // This generates POM.xml with proper paramters
+            pom.project {
+
+                //添加项目描述
+                name 'HXAopPlugin'
+                url siteUrl
+
+                //设置开源证书信息
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                //添加开发者信息
+                developers {
+                    developer {
+                        name 'mwl'
+                        email 'itexplorer@126.com'
+                    }
+                }
+
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+
+    }
+}
+
+//配置上传Bintray相关信息
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user =  properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = 'HXAopPlugin' // 上传到中央仓库的名称
+        name = 'HXAopPlugin' // 上传到jcenter 的项目名称
+        desc = '火星aop插件' // 项目描述
+        websiteUrl = siteUrl
+        issueTrackerUrl = issueUrl
+        vcsUrl = gitUrl
+        labels = ['gradle', 'plugin']
+        licenses = ['Apache-2.0']
+        publish = true
+    }
+}
