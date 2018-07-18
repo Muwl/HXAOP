@@ -1,0 +1,23 @@
+
+def baseUrl = 'https://github.com/Muwl/HXAOP'
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+publish {
+    artifactId = 'HXAopLibrary' // library的名字
+    uploadName='HXAopLibrary'
+    publishVersion = '1.0.7' // 版本
+
+
+    userOrg = 'muwl'//用户所在组织
+    repoName = 'HXAopPlugin'
+    groupId = 'com.hxsd.plugin' // 包名
+    desc = '火星aop基础库' // 描述
+    website = baseUrl
+    licences = ['Apache-2.0']
+
+    bintrayUser = properties.getProperty("bintray.user") // 账户名
+    bintrayKey = properties.getProperty("bintray.apikey") // 就是API key
+    dryRun = 'false'
+}
+

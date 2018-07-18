@@ -10,42 +10,7 @@ def issueUrl = "${baseUrl}/issues"
 def docUrl = "${baseUrl}/wiki"
 
 group = 'com.hxsd.plugin'  // 组名
-def libName = "HXAopLibrary"
-version = '1.0.6' // 版本
-
-//生成源文件
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-//生成文档
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    options.encoding "UTF-8"
-    options.charSet 'UTF-8'
-    options.author true
-    options.version true
-    options.links docUrl
-    failOnError false
-}
-
-//文档打包成jar
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-//拷贝javadoc文件
-task copyDoc(type: Copy) {
-    from "${buildDir}/docs/"
-    into "docs"
-}
-
-//上传到jcenter所需要的源码文件
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
+version = '1.0.8' // 版本
 
 install {
     repositories.mavenInstaller {
@@ -82,6 +47,43 @@ install {
 }
 
 
+
+//生成源文件
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+//生成文档
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(configurations.compile.files,android.getBootClasspath().join(File.pathSeparator))
+    options.encoding "UTF-8"
+    options.charSet 'UTF-8'
+    options.author true
+    options.version true
+    options.links docUrl
+    failOnError false
+}
+
+//文档打包成jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+//拷贝javadoc文件
+task copyDoc(type: Copy) {
+    from "${buildDir}/docs/"
+    into "docs"
+}
+
+//上传到jcenter所需要的源码文件
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+
+
 //配置上传Bintray相关信息
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -95,10 +97,10 @@ bintray {
         repo = 'HXAopPlugin' // 上传到中央仓库的名称
         name = 'HXAopLibrary' // 上传到jcenter 的项目名称
         desc = '火星aop基础库' // 项目描述
+        userOrg = 'muwl'
         websiteUrl = siteUrl
         issueTrackerUrl = issueUrl
         vcsUrl = gitUrl
-        labels = ['gradle', 'plugin']
         licenses = ['Apache-2.0']
         publish = true
     }

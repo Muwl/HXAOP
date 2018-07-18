@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.hxsd.hxonline.HXAopPlugin'
+
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -15,7 +16,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 
@@ -23,6 +23,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:appcompat-v7:27.1.1'
+    compile 'org.aspectj:aspectjrt:1.8.13'
 }
 
 repositories {
@@ -30,6 +31,19 @@ repositories {
     jcenter()
 }
 
-
+allprojects {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    //加上这些
+    tasks.withType(Javadoc) {
+        options{ encoding "UTF-8"
+            charSet 'UTF-8'
+            links "http://docs.oracle.com/javase/7/docs/api"
+        }
+    }
+}
 
 apply from: '../bintraylibrary.gradle'
+//apply from: '../bintraynovoda.gradle'
